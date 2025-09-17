@@ -1,0 +1,94 @@
+{
+  "wallet": {
+    "user_id": "USER123",
+    "balance": 200000,
+    "currency": "NGN",
+    "last_updated": "2025-09-15T14:30:00Z"
+  },
+
+   "phonelist": [
+    "09090982734",
+    "09123451234",
+    "07032456120"
+  ],
+
+  "networks": [
+    { "id": "mtn", "name": "MTN", "logo": "mtn.jpg" },
+    { "id": "airtel", "name": "Airtel", "logo": "airtel.jpg" },
+    { "id": "glo", "name": "Glo", "logo": "glo.jpg" },
+    { "id": "9mobile", "name": "9mobile", "logo": "9mobile.jpg" }
+  ],
+
+   "airtimeplans": [
+    { "id": "100", "name": "100", "price": 100 },
+    { "id": "200", "name": "200", "price": 200 },
+    { "id": "500", "name": "500", "price": 500 },
+    { "id": "1000", "name": "1000", "price": 1000 },
+    { "id": "2000", "name": "2000", "price": 2000 },
+    { "id": "5000", "name": "2000", "price": 5000 }
+    
+  ],
+
+  "dataplans": [
+    { "id": "MTN1GB", "network": "mtn", "name": "MTN 1GB Daily", "price": 300, "validity": "1 day" },
+    { "id": "MTN5GB", "network": "mtn", "name": "MTN 5GB Weekly", "price": 1500, "validity": "7 days" },
+    { "id": "AIRTEL2GB", "network": "airtel", "name": "Airtel 2GB Weekly", "price": 1000, "validity": "7 days" },
+    { "id": "GLO10GB", "network": "glo", "name": "Glo 10GB Monthly", "price": 3000, "validity": "30 days" }
+  ],
+
+  "tvpackages": [
+    { "id": "DSTV_COMPACT", "provider": "dstv", "name": "DStv Compact", "price": 9500, "validity": "30 days" },
+    { "id": "DSTV_PREMIUM", "provider": "dstv", "name": "DStv Premium", "price": 21000, "validity": "30 days" },
+    { "id": "GOTV_MAX", "provider": "gotv", "name": "GOtv Max", "price": 4200, "validity": "30 days" },
+    { "id": "STARTIMES_BASIC", "provider": "startimes", "name": "Startimes Basic", "price": 2500, "validity": "30 days" }
+  ],
+
+  "transactions": [
+    {
+      "type": "airtime",
+      "status": "success",
+      "message": "Airtime purchase successful",
+      "transaction_id": "TXN123456789",
+      "network": "mtn",
+      "phone_number": "2348012345678",
+      "amount": 500,
+      "balance_before": 20000,
+      "balance_after": 19500,
+      "timestamp": "2025-09-15T14:35:20Z"
+    },
+    {
+      "type": "data",
+      "status": "success",
+      "message": "Data purchase successful",
+      "transaction_id": "TXN987654321",
+      "network": "airtel",
+      "phone_number": "2348098765432",
+      "plan": {
+        "id": "AIRTEL2GB",
+        "name": "Airtel 2GB Weekly",
+        "price": 1000,
+        "validity": "7 days"
+      },
+      "balance_before": 19500,
+      "balance_after": 18500,
+      "timestamp": "2025-09-15T14:38:11Z"
+    },
+    {
+      "type": "tv",
+      "status": "success",
+      "message": "TV subscription successful",
+      "transaction_id": "TXN555666777",
+      "provider": "dstv",
+      "smartcard_number": "12345678901",
+      "package": {
+        "id": "DSTV_COMPACT",
+        "name": "DStv Compact",
+        "price": 9500,
+        "validity": "30 days"
+      },
+      "balance_before": 18500,
+      "balance_after": 9000,
+      "timestamp": "2025-09-15T14:40:45Z"
+    }
+  ]
+}
