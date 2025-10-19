@@ -4,7 +4,8 @@ import SwitchBtns from '../Components/SwitchBtns'
 import Card from '../Components/Card';
 import Products from '../Components/Products';
 import axios from "axios";
-
+import Checkout from '../Components/Checkout';
+import Loader from '../Components/Loader';
 
 const networkPrefixes = {
         mtn: ["0803","0806","0703","0706","0813","0810","0814","0816","0903","0906","0913","0916"],
@@ -46,8 +47,8 @@ const Airtime = () => {
     const [airtimePlans, setAirtimePlans] = useState([]);
     const [activeNetwork, setActiveNetwork] = useState(networks[0]?.id || "");
     const [phonelist,setPhoneList] = useState([]);
-
-    
+    const [openCheckout, setOpenCheckout] = useState(false);
+    const [loading, setLoading] = useState(false);
     const currentNetwork = networks.find((network) => network.id === activeNetwork);
 
     const handleProductSelect = (product) => {
@@ -57,8 +58,31 @@ const Airtime = () => {
        }
        setAirtimeValue(product.price); 
 
+       setLoading(true);
       
-      window.location.href = `/checkout?network=${activeNetwork}&amount=${product.price}&phone=${phoneValue}`;
+       setTimeout(() => {
+        setOpenCheckout(true);
+        setLoading(false);
+       }, 1000);
+    };
+
+    const handleOpenCheckout = async() => {
+      if (!phoneValue || phoneValue.length < 11) { 
+        alert("Please enter a valid phone number ");
+        return;
+      }
+      if (!airtimeValue) {
+        alert("Please enter an amount");
+        return;
+      }
+
+      setLoading(true);
+      
+      setTimeout(() => {
+        setOpenCheckout(true);
+        setLoading(false);
+      }, 1500);
+      
     };
 
     const handlePhoneChange = (e) => {
@@ -72,10 +96,13 @@ const Airtime = () => {
         if (digits.startsWith("234")) {
             digits = "0" + digits.slice(3);
         }
+       
 
         if (digits.length >= 4) {
             const prefix = digits.slice(0, 4);
             let detectedNetwork = "";
+
+        
 
             Object.entries(networkPrefixes).forEach(([network, prefixes]) => {
                 if (prefixes.includes(prefix)) {
@@ -93,20 +120,6 @@ const Airtime = () => {
         }
     };
 
-    const handleCheckout = () => {
-      if (!phoneValue) { 
-        alert("Please enter a phone number first");
-        return;
-      }
-      if (!airtimeValue) {
-        alert("Please enter an amount");
-        return;
-      }
-
-      // ✅ do the redirect here only
-      window.location.href = `/checkout?network=${activeNetwork}&amount=${airtimeValue}&phone=${phoneValue}`;
-    };
-   
   const mappedNetworks = networks.map(net => ({
     boxId: net.id,          
     image: net.logo,    
@@ -135,7 +148,7 @@ const Airtime = () => {
         />
          <datalist id="options">
           {phonelist.map((phone, index) => (
-            <option key={index} value={phone} />
+            <option key={index} value={phone.phone} />
           ))}
          </datalist>
         <p className="mt-2 text-sm text-gray-600">Selected: {phoneValue}</p>  
@@ -158,15 +171,24 @@ const Airtime = () => {
           onChange={(e) => setAirtimeValue(e.target.value)}
           className="block w-1/2 mx-6 p-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-gray-300"
         />
-        <div className='w-full flex items-center '>
+       
+        
+        <Checkout
+          isOpen={openCheckout}
+          onClose={() => setOpenCheckout(false)}
+          endpoint="http://localhost:8000/transactions"
+          transactionData={{ network:activeNetwork, phone:phoneValue, amount:airtimeValue }}
+        /> 
+        <div className='flex items-center mb-10'>
         <button
           type="button"
-          onClick={handleCheckout} 
-            className='mt-4 mb-2 max-w-1/2 mx-auto bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:opacity-50'
+          onClick={handleOpenCheckout} 
+          className='mt-4 mb-2 max-w-1/2 mx-auto bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:opacity-50'
         >
-          Proceed to Pay
+           Proceed to Pay
         </button>
         </div>
+        <Loader isLoading={loading} minTime={1200} />
       </Card>
       
       </form>

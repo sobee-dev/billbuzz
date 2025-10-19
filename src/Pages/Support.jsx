@@ -10,7 +10,7 @@ const Support = () => {
           <ul>
             <li><strong>Email: </strong>support@billbuzz.ng</li>
             <li><strong>Call: </strong> 09162293122</li>
-            <li><strong>Whatsaap: </strong> <Link to=''>0712345678</Link></li>
+            <li><strong>Whatsaap: </strong> <Link to='https://wa.me/2349136435116'>09136435116</Link></li>
           </ul>
         </div>
       </Card>

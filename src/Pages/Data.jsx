@@ -3,6 +3,9 @@ import SwitchBtns from '../Components/SwitchBtns';
 import AddsCard from '../Components/AddsCard';
 import Card from '../Components/Card';
 import Products from '../Components/Products';
+import axios from "axios";
+import Loader from '../Components/Loader';
+import Checkout from '../Components/Checkout';
 
  const networkPrefixes = {
         mtn: ["0803","0806","0703","0706","0813","0810","0814","0816","0903","0906","0913","0916"],
@@ -15,36 +18,49 @@ import Products from '../Components/Products';
 const Data = () => {
 
     const defaultImage = "public/assets/logo.svg";
-    
-    const items = [
-        { image: "mtn.jpg", boxId: "mtn",productList:[
-            {name:"2MB", price:99,  description:'2 days'},
-            {name:"2MB", price:99,  description:'7 days'},
-            {name:"2MB", price:99,  description:'30 days'},
-            {name:"2MB", price:99,  description:'15 days'}
-        ] },
 
-        { image: "airtel.jpg", boxId: "airtel",productList:[
-           
-            { name: "100GB", price: 100, description:'1 week' },
-            { name: "20GB", price: 500, description: '1 month'},
-       ] },
-        { image: "glo.jpg", boxId: "glo",productList:[
-            {name:"10GB", price:99,description:'2 days'},
-            {name:"10GB", price:99,description:'7 days'},
-            {name:"10GB", price:99,description:'1 day'},
-            {name:"10GB", price:99,description:'7 days'}
-        ] },
-        { image: "9mobile.jpg", boxId: "9mobile",productList:[
-            {name:"5GB", price:199, description:'1 month'},
-            {name:"5GB", price:199, description:'2 months'},
-            {name:"5GB", price:199, description:'6 months'},
-            {name:"5GB", price:199, description:'2 months'}
-        ] },
-    ];
-    const [active, setActive] = useState(items[0]?.boxId || "");
-    const currentBox = items.find((item) => item.boxId === active);
+    useEffect(() => {
+      axios.get("http://localhost:8000/networks")
+        .then((res) => {
+          setNetworks(res.data);
+          setActiveNetwork(res.data[0]?.id || null); // default first network
+        })
+        .catch((err) => console.error(err));
+    }, []);
+
+    useEffect(() => {
+      axios.get("http://localhost:8000/phonelist")
+        .then((res) => setPhoneList(res.data))
+        .catch((err) => console.error(err));
+    }, []);
+
+    useEffect(() => {
+      axios.get("http://localhost:8000/dataplans")
+        .then((res) => {
+          setDataplans(res.data);
+        })
+        .catch((err) => console.error(err));
+    }, []);
+
+    
+    
+    const [networks, setNetworks] = useState([]);
+    const [activeNetwork, setActiveNetwork] = useState(null);
+    const [phonelist,setPhoneList] = useState([]);
     const [phoneValue, setPhoneValue] = useState("");
+    const [dataplans, setDataplans] = useState([]);
+    const currentNetwork = networks.find((network) => network.id === activeNetwork);
+    const categories = currentNetwork? [...new Set(dataplans.filter((p) => p.network === currentNetwork.id)
+      .map((p) => p.validity))]: [];
+    const [activeCategory, setActiveCategory] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [dataPrice, setDataPrice] = useState("");
+    const filteredProducts = dataplans.filter((p) => p.network === activeNetwork &&
+        (!activeCategory || p.validity === activeCategory)); 
+    const [openCheckout, setOpenCheckout] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+
+    
     const handlePhoneChange = (e) => {
         const value = e.target.value;
         setPhoneValue(value);
@@ -69,51 +85,59 @@ const Data = () => {
 
         // if network detected, set its box active
         if (detectedNetwork) {
-            const foundBox = items.find((item) => item.boxId === detectedNetwork); 
+            const foundBox = networks.find((network) => network.name.toLowerCase() === detectedNetwork); 
             if (foundBox) {
-                setActive(foundBox.boxId);
+                setActiveNetwork(foundBox.id);
+            }
             }
         }
         }
+    
+
+    const handleProductSelect = (product) => {
+       if (!phoneValue || phoneValue.length < 11) { 
+        alert("Please enter a valid phone number ");
+        return;
+      }
+       setDataPrice(product.price); 
+       
+       setSelectedProduct(product)
+       setLoading(true);
+
+       setTimeout(() => {
+        setOpenCheckout(true);
+        setLoading(false);
+       }, 1000);
+
     };
 
-
-
-    const allProducts = currentBox?.productList || [];
-    const categories = [...new Set(allProducts.map((p) => p.description))];
-    const [activeCategory, setActiveCategory] = useState(null);
-    const [dataValue, setDataValue] = useState("");
     useEffect(() => {
         if (categories.length > 0) {
             if (!activeCategory || !categories.includes(activeCategory)) {
                 setActiveCategory(categories[0]);
             } 
         }
-    }, [active, categories]);
-    const filteredProducts = activeCategory? allProducts.filter((p) => p.description === activeCategory): allProducts; 
+    }, [activeNetwork, categories]);
+
+    const mappedNetworks = networks.map(net => ({
+        boxId: net.id,          
+        image: net.logo,    
+        name: net.name       
+    }));
     
-    const handleProductSelect = (product) => {
-       if (!phoneValue) {
-        alert("Please enter a phone number first");
-        return;
-       }
-       setDataValue(product.price); 
-
-      
-      window.location.href = `/checkout?network=${active}&amount=${product.price}&phone=${phoneValue}`;
-    };
-
-    
-
+    const categoryItems = categories.map((cat) => ({
+        id: cat,
+        name: cat
+    }));
 
     return (
         <div>
           <AddsCard />
-          <form>
+          <form >
           <SwitchBtns
-            items={items}
-            active={active}
-            setActive={setActive}
+            items={mappedNetworks}
+            active={activeNetwork}
+            setActive={setActiveNetwork}
             defaultImage={defaultImage}
             />
 
@@ -127,9 +151,9 @@ const Data = () => {
                     className="block w-full p-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500"
                 />
                     <datalist id="options">
-                    <option value="09090982734" />
-                    <option value="09123451234" />
-                    <option value="07032456120" />
+                        {phonelist.map((phone, index) => (
+                            <option key={index} value={phone.phone} />
+                        ))}
                     </datalist>
             </Card>
     
@@ -140,12 +164,22 @@ const Data = () => {
                 setActive={setActiveCategory}
                 className= "h-auto w-full bg-gray-300 border-none mt-4"
                 />
-                {currentBox && (
+                {currentNetwork && (
                     <div className="p-3">
                         <Products products={filteredProducts} onSelect={handleProductSelect}/>
                     </div>
                 )}
+
+                <Loader isLoading={loading} minTime={1200} />
             </Card>
+            <Checkout
+            isOpen={openCheckout}
+            onClose={() => setOpenCheckout(false)}
+            endpoint="http://localhost:8000/transactions"
+            transactionData={{ network:activeNetwork, phone:phoneValue, amount:dataPrice, bundle:selectedProduct?.name,}}
+            onSubmit={(result) => {
+                console.log("Transaction finished ✅", result);}}
+            /> 
             </form>
         </div>
     )

@@ -27,7 +27,7 @@ const Cac = () => {
       <h1 className='text-[24px] my-3 italic text-center text-blue-950'>Do you have questions??</h1> 
       
       <div className='text-center'>
-      <Link to='' className=' mt-3 p-2 px-3 w-1/2 mx-auto text-white font bold rounded-xl text-[25px] bg-blue-500 border border-yellow-200'>Contact Us</Link>     
+      <Link to='https://wa.me/2349136435116?text=Hello%20I%20am%20interested%20in%20registering%20a%20business......' className=' mt-3 p-2 px-3 w-1/2 mx-auto text-white font bold rounded-xl text-[25px] bg-blue-500 border border-yellow-200'>Contact Us</Link>     
         <h1 className=' my-3 text-[20px]'>For free consultations!!!</h1> 
         <h1 className='mb-6 text-blue-900 font-bold'>Provide neccessary business information, and your Business documents will be delivered to you doorstep within the shortest period</h1>    
       </div>

@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
+import Loader from "./Loader";
+
+
 
 export default function PasswordModal({ isOpen, onClose, onConfirm, loading }) {
   const [password, setPassword] = useState("");
+
+  
 
   // Reset password whenever modal closes
   useEffect(() => {
@@ -24,10 +29,10 @@ export default function PasswordModal({ isOpen, onClose, onConfirm, loading }) {
           Confirm Purchase
         </h2>
         <p className="text-gray-600 text-sm mb-4">
-          Please enter your password to complete this data purchase.
+          Please enter your password to complete this purchase.
         </p>
 
-        <form onSubmit={handleSubmit}>
+        
           <input
             type="password"
             placeholder="Enter password"
@@ -47,14 +52,15 @@ export default function PasswordModal({ isOpen, onClose, onConfirm, loading }) {
               Cancel
             </button>
             <button
-              type="submit"
-              disabled={loading}
+              type="button"
+              disabled={loading || !password.trim()}
               className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+              onClick={handleSubmit}
             >
-              {loading ? "Processing..." : "Pay"}
+              {loading ? <Loader /> : "Pay"}
             </button>
           </div>
-        </form>
+        
       </div>
     </div>
   );
