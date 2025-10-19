@@ -9,7 +9,7 @@ function Navbar() {
     return (
       <div className=' h-9 flex  items-center sticky top-0 z-50 '>
         <div className={`z-20 absolute  rounded-full bg-blue-800/80 transition-all duration-700 ease-in-out
-            ${open ? "w-[1000px] h-[1000px] -top-40 -right-40 bg-blue-800/80" : "-top-23 -right-21 w-40 h-40"}`}>
+            ${open ? "w-[200vw] h-[200vw] -top-[50vw] -right-[50vw] bg-blue-800/80" : "-top-23 -right-21 w-40 h-40"}`}>
         </div>
         <button onClick={() => setOpen(!open)} className="text-white z-30 absolute top-4 right-4">
             {open ? <FaTimes size={28} /> : <FaBars size={28} />}
