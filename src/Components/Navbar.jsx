@@ -7,7 +7,11 @@ import { Link } from 'react-router-dom';
 function Navbar() {
     const [open, setOpen] = useState(false);
     return (
-      <div className=' h-9 flex  items-center sticky top-0 z-50 '>
+      <>
+      <div className="fixed inset-0 z-60 overflow-hidden">
+        
+      
+      <div className='  flex  items-center sticky top-0 z-50 '>
         <div className={`z-20 absolute  rounded-full bg-blue-800/80 transition-all duration-700 ease-in-out
             ${open ? "w-[200vw] h-[200vw] -top-[50vw] -right-[50vw] bg-blue-800/80" : "-top-23 -right-21 w-40 h-40"}`}>
         </div>
@@ -23,7 +27,10 @@ function Navbar() {
         </ul>
         
       </div>
+      </div>
+    </>
     )
+    
   }
 
 export default Navbar
